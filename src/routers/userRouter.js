@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', userController.createNewUser);
 router.get('/', authorizationMiddleware, userController.listUsers);
-// router.get('/:id', userController);
+router.get('/:id', authorizationMiddleware, userController.findUser);
 // router.delete('/me', userController);
 
 module.exports = router;

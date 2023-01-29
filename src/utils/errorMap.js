@@ -5,6 +5,7 @@ const errorMap = {
   JWT_MALFORMED: 401,
   MISSING_AUTH_TOKEN: 401,
   USER_ALREADY_EXISTS: 409,
+  USER_NOT_FOUND: 404,
 };
 
 const mapError = (type) => errorMap[type] || 500;
