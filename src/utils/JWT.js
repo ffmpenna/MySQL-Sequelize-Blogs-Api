@@ -14,11 +14,13 @@ const authenticateToken = async (token) => {
     return { type: 'MISSING_AUTH_TOKEN', message: 'Missing auth token' };
   }
 
+  console.log({ token });
+
   try {
     const decodedData = await jwt.verify(token, JWT_SECRET);
     return decodedData;
   } catch (err) {
-    return { type: 'JWT_MALFORMED', message: 'JWT malformed' };
+    return { type: 'JWT_MALFORMED', message: err.message };
   }
 };
 
