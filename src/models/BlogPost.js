@@ -10,12 +10,12 @@ const BlogPost = (sequelize, DataTypes) => {
             title: {
                 type: DataTypes.STRING,
             },
+            content: {
+                type: DataTypes.STRING,
+            },
             userId: {
                 type: DataTypes.INTEGER,
                 foreignKey: true,
-            },
-            content: {
-                type: DataTypes.STRING,
             },
             published: {
                 type: DataTypes.DATE,

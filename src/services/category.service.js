@@ -1,5 +1,6 @@
 const { Category } = require('../models');
 const { validateNewCategory } = require('./validations/validateCategoryInputs');
+const { validateId } = require('./validations/validateIdInput');
 
 const create = async ({ name }) => {
   const error = validateNewCategory({ name });
@@ -25,4 +26,20 @@ const getAll = async () => {
   return { type: null, message: categoryList };
 };
 
-module.exports = { create, getAll };
+const getById = async (id) => {
+  const error = validateId(id);
+  if (error.type) return error;
+
+  const category = await Category.findOne({ where: { id } });
+
+  if (!category) {
+    return {
+      type: 'CATEGORY_NOT_FOUND',
+      message: 'one or more "categoryIds" not found',
+    };
+  }
+
+  return { type: null, message: category };
+};
+
+module.exports = { create, getAll, getById };
