@@ -15,4 +15,11 @@ const createNewUser = async (req, res) => {
   return res.status(201).json(message);
 };
 
-module.exports = { createNewUser };
+const listUsers = async (_req, res) => {
+  const { type, message } = await userService.getAll();
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+
+  return res.status(200).json(message);
+};
+
+module.exports = { createNewUser, listUsers };
