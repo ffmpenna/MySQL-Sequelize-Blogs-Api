@@ -7,11 +7,13 @@ const validateNewPost = (newPostData) => {
   return { type: null, message: '' };
 };
 
-const validateUpdatePost = async ({ title, content, id, userId }) => {
-  const { error } = updatePostSchema.validate({ title, content });
-  
+const validateUpdatePost = (updatePostData) => {
+  const { error } = updatePostSchema.validate(updatePostData);
   if (error) return { type: 'INVALID_VALUE', message: error.message };
+  return { type: null, message: '' };
+};
 
+const validateUpdatePostOwner = async ({ id, userId }) => {
   const postExists = await BlogPost.findOne({ where: { id } });
 
   if (!postExists) {
@@ -25,4 +27,8 @@ const validateUpdatePost = async ({ title, content, id, userId }) => {
   return { type: null, message: '' };
 };
 
-module.exports = { validateNewPost, validateUpdatePost };
+module.exports = {
+  validateNewPost,
+  validateUpdatePost,
+  validateUpdatePostOwner,
+};

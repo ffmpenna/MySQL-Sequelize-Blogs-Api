@@ -10,7 +10,7 @@ router.post('/', authorizationMiddleware, postController.createNewPost);
 router.get('/', authorizationMiddleware, postController.listPosts);
 router.get('/:id', authorizationMiddleware, postController.findPost);
 router.put('/:id', authorizationMiddleware, postController.updatePost);
-// router.delete('/:id', postController);
+router.delete('/:id', authorizationMiddleware, postController.deletePost);
 // router.get('/search', postController);
 
 module.exports = router;

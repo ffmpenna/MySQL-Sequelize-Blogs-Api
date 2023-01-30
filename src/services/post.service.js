@@ -3,7 +3,11 @@ const {
   validateIfCategoryExists,
 } = require('./validations/validateCategoryInputs');
 const { validateId } = require('./validations/validateIdInput');
-const { validateNewPost, validateUpdatePost } = require('./validations/validatePostInputs');
+const { 
+  validateNewPost, 
+  validateUpdatePost, 
+  validateUpdatePostOwner,
+} = require('./validations/validatePostInputs');
 
 const getAll = async () => {
   const postList = await BlogPost.findAll({
@@ -59,7 +63,10 @@ const create = async ({ title, content, categoryIds, userId }) => {
 };
 
 const update = async ({ title, content, id, userId }) => {
-  const error = await validateUpdatePost({ title, content, id, userId });
+  let error = validateUpdatePost({ title, content });
+  if (error.type) return error;
+
+  error = await validateUpdatePostOwner({ id, userId });
   if (error.type) return error;
 
  await BlogPost.update({ title, content }, { where: { id } });
@@ -69,9 +76,19 @@ const update = async ({ title, content, id, userId }) => {
   return { type: null, message: updatedPost.dataValues };
 };
 
+const remove = async ({ id, userId }) => {
+  const error = await validateUpdatePostOwner({ id, userId });
+  if (error.type) return error;
+
+  await BlogPost.destroy({ where: { id } });
+
+  return { type: null, message: '' };
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
+  remove,
 };

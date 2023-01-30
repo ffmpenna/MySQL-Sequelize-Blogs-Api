@@ -36,12 +36,34 @@ const updatePost = async (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
   const { id: userId } = res.locals.user;
-  
-  const { type, message } = await postService.update({ title, content, id, userId });
+
+  const { type, message } = await postService.update({
+    title,
+    content,
+    id,
+    userId,
+  });
 
   if (type) return res.status(errorMap.mapError(type)).json({ message });
 
   return res.status(200).json(message);
 };
 
-module.exports = { createNewPost, findPost, listPosts, updatePost };
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+  const { id: userId } = res.locals.user;
+
+  const { type, message } = await postService.remove({ id, userId });
+
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+
+  return res.status(204).json(message);
+};
+
+module.exports = {
+  createNewPost,
+  findPost,
+  listPosts,
+  updatePost,
+  deletePost,
+};
