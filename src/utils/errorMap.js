@@ -9,6 +9,7 @@ const errorMap = {
   CATEGORY_NOT_FOUND: 400,
   CATEGORY_ALREADY_EXISTS: 409,
   POST_NOT_FOUND: 404,
+  UNAUTHORIZED_USER: 401,
 };
 
 const mapError = (type) => errorMap[type] || 500;

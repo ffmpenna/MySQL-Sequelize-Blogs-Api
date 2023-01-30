@@ -3,7 +3,7 @@ const {
   validateIfCategoryExists,
 } = require('./validations/validateCategoryInputs');
 const { validateId } = require('./validations/validateIdInput');
-const { validateNewPost } = require('./validations/validatePostInputs');
+const { validateNewPost, validateUpdatePost } = require('./validations/validatePostInputs');
 
 const getAll = async () => {
   const postList = await BlogPost.findAll({
@@ -29,7 +29,7 @@ const getById = async (id) => {
   });
 
   if (!post) return { type: 'POST_NOT_FOUND', message: 'Post does not exist' };
-  
+
   return { type: null, message: post };
 };
 
@@ -39,21 +39,39 @@ const create = async ({ title, content, categoryIds, userId }) => {
 
   const categoriesExists = await validateIfCategoryExists(categoryIds);
 
-  if (!categoriesExists) { 
-    return { type: 'CATEGORY_NOT_FOUND', message: 'one or more "categoryIds" not found' };
+  if (!categoriesExists) {
+    return {
+      type: 'CATEGORY_NOT_FOUND',
+      message: 'one or more "categoryIds" not found',
+    };
   }
 
   const post = await BlogPost.create({ title, content, userId });
 
-  categoryIds.forEach(async (categoryId) => PostCategory.create({ postId: post.id, categoryId }));
+  categoryIds.forEach(async (categoryId) =>
+    PostCategory.create({ postId: post.id, categoryId }));
 
-  const { dataValues: { user, categories, ...postData } } = await (await getById(post.id)).message;
+  const {
+    dataValues: { user, categories, ...postData },
+  } = await (await getById(post.id)).message;
 
   return { type: null, message: postData };
+};
+
+const update = async ({ title, content, id, userId }) => {
+  const error = await validateUpdatePost({ title, content, id, userId });
+  if (error.type) return error;
+
+ await BlogPost.update({ title, content }, { where: { id } });
+
+ const updatedPost = await (await getById(id)).message;
+
+  return { type: null, message: updatedPost.dataValues };
 };
 
 module.exports = {
   create,
   getAll,
   getById,
+  update,
 };

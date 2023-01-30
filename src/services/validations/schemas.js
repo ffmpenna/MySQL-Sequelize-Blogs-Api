@@ -1,5 +1,7 @@
 const Joi = require('joi');
 
+const FIELDS_MISSING = 'Some required fields are missing';
+
 const idSchema = Joi.number().integer().label('id').required();
 
 const createUserSchema = Joi.object({
@@ -17,16 +19,27 @@ const createPostSchema = Joi.object({
   title: Joi.string()
     .label('title')
     .required()
-    .messages({ 'string.empty': 'Some required fields are missing' }),
+    .messages({ 'string.empty': FIELDS_MISSING }),
   content: Joi.string()
     .label('content')
     .required()
-    .messages({ 'string.empty': 'Some required fields are missing' }),
+    .messages({ 'string.empty': FIELDS_MISSING }),
   categoryIds: Joi.array()
     .items(Joi.number().integer().label('categoryId').required())
     .label('categoryIds')
     .required()
-    .messages({ 'string.empty': 'Some required fields are missing' }),
+    .messages({ 'string.empty': FIELDS_MISSING }),
+});
+
+const updatePostSchema = Joi.object({
+  title: Joi.string()
+    .label('title')
+    .required()
+    .messages({ 'string.empty': FIELDS_MISSING }),
+  content: Joi.string()
+    .label('content')
+    .required()
+    .messages({ 'string.empty': FIELDS_MISSING }),
 });
 
 module.exports = {
@@ -34,4 +47,5 @@ module.exports = {
   createUserSchema,
   createCategorySchema,
   createPostSchema,
+  updatePostSchema,
 };
