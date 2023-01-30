@@ -1,11 +1,12 @@
+const { Op } = require('sequelize');
 const { BlogPost, User, Category, PostCategory } = require('../models');
 const {
   validateIfCategoryExists,
 } = require('./validations/validateCategoryInputs');
 const { validateId } = require('./validations/validateIdInput');
-const { 
-  validateNewPost, 
-  validateUpdatePost, 
+const {
+  validateNewPost,
+  validateUpdatePost,
   validateUpdatePostOwner,
 } = require('./validations/validatePostInputs');
 
@@ -69,9 +70,9 @@ const update = async ({ title, content, id, userId }) => {
   error = await validateUpdatePostOwner({ id, userId });
   if (error.type) return error;
 
- await BlogPost.update({ title, content }, { where: { id } });
+  await BlogPost.update({ title, content }, { where: { id } });
 
- const updatedPost = await (await getById(id)).message;
+  const updatedPost = await (await getById(id)).message;
 
   return { type: null, message: updatedPost.dataValues };
 };
@@ -85,10 +86,28 @@ const remove = async ({ id, userId }) => {
   return { type: null, message: '' };
 };
 
+const search = async (query) => {
+  const posts = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.like]: `%${query}%` } },
+        { content: { [Op.like]: `%${query}%` } },
+      ],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+
+  return { type: null, message: posts };
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
   remove,
+  search,
 };
