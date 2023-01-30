@@ -43,4 +43,9 @@ const getById = async (id) => {
   return { type: null, message: user };
 };
 
-module.exports = { create, getAll, getById };
+const selfRemove = async (id) => {
+  await User.destroy({ where: { id } });
+  return { type: null, message: '' };
+};
+
+module.exports = { create, getAll, getById, selfRemove };

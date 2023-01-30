@@ -25,10 +25,19 @@ const listUsers = async (_req, res) => {
 const findUser = async (req, res) => {
   const { id } = req.params;
   const { type, message } = await userService.getById(id);
-  
+
   if (type) return res.status(errorMap.mapError(type)).json({ message });
 
   return res.status(200).json(message);
 };
 
-module.exports = { createNewUser, listUsers, findUser };
+const selfRemoveUser = async (_req, res) => {
+  const { id } = res.locals.user;
+  const { type, message } = await userService.selfRemove(id);
+
+  if (type) return res.status(errorMap.mapError(type)).json({ message });
+
+  return res.status(204).json(message);
+};
+
+module.exports = { createNewUser, listUsers, findUser, selfRemoveUser };
